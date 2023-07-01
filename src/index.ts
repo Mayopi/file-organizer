@@ -6,6 +6,7 @@ import { createSpinner } from "nanospinner";
 import readFiles from "./common/readFiles";
 import checkExtension from "./common/checkExtension";
 import fetchExtension from "./common/fetchExtension";
+import organize from "./common/organize";
 
 interface IPrompt {
   path: string;
@@ -66,6 +67,8 @@ ${chalk.underline.blue("https://github.com/Mayopi")}
       start = performance.now();
 
       fs.cpSync(data.path, simulationDestination.path, { recursive: true });
+
+      data.path = simulationDestination.path;
     }
 
     spinner.start({ text: "Running Scripts...", color: "yellow" });
@@ -73,11 +76,11 @@ ${chalk.underline.blue("https://github.com/Mayopi")}
 
     const extensions = checkExtension(readData);
 
-    const descriptions = await fetchExtension(extensions);
+    await fetchExtension(extensions);
 
-    if (descriptions) {
-      spinner.success({ text: `Success re organizing all files within ${chalk.blue(((performance.now() - start) / 1000).toFixed(2))} seconds.` });
-    }
+    organize(readData, data.path);
+
+    spinner.success({ text: `Success re organizing all files within ${chalk.blue(((performance.now() - start) / 1000).toFixed(2))} seconds.` });
   } catch (error) {
     console.log(error);
     spinner.error({ text: error.message });
