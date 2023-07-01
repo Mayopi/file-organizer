@@ -1,6 +1,6 @@
 # File Organizer
 
-File Organizer is a command-line application built with JavaScript that helps users organize their files in a directory based on their file extensions. It provides a convenient way to sort and categorize files, making it easier to locate and manage them.
+File Organizer is a command-line application built with **Typescript** that helps users organize their files in a directory based on their file extensions. It provides a convenient way to sort and categorize files, making it easier to locate and manage them.
 
 ## Features
 
