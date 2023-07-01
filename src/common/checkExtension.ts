@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import { IStructure } from "./readFiles";
 
-interface IRegisteredExtension {
+export interface IRegisteredExtension {
   extension: string;
   description: string;
 }

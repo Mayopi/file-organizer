@@ -5,6 +5,7 @@ import validatePath from "./common/validatePath";
 import { createSpinner } from "nanospinner";
 import readFiles from "./common/readFiles";
 import checkExtension from "./common/checkExtension";
+import fetchExtension from "./common/fetchExtension";
 
 interface IPrompt {
   path: string;
@@ -72,8 +73,11 @@ ${chalk.underline.blue("https://github.com/Mayopi")}
 
     const extensions = checkExtension(readData);
 
-    console.log(extensions);
-    spinner.success({ text: `Success re organizing all files within ${chalk.blue(((performance.now() - start) / 1000).toFixed(2))} seconds.` });
+    const descriptions = await fetchExtension(extensions);
+
+    if (descriptions) {
+      spinner.success({ text: `Success re organizing all files within ${chalk.blue(((performance.now() - start) / 1000).toFixed(2))} seconds.` });
+    }
   } catch (error) {
     console.log(error);
     spinner.error({ text: error.message });
