@@ -71,7 +71,7 @@ ${chalk.underline.blue("https://github.com/Mayopi")}
       data.path = simulationDestination.path;
     }
 
-    spinner.start({ text: "Running Scripts...", color: "yellow" });
+    spinner.start({ text: "Running Scripts...\n", color: "yellow" });
     const readData = readFiles(data.path);
 
     const extensions = checkExtension(readData);

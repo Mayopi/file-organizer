@@ -1,8 +1,10 @@
 import fs from "fs-extra";
 import { IStructure } from "./readFiles";
 import { IRegisteredExtension } from "./checkExtension";
+import OrganizeLogger from "../logs/logFile";
 
 const organize = (data: IStructure[], path: string): void => {
+  const logger = new OrganizeLogger();
   const regirestedExtension: IRegisteredExtension[] = JSON.parse(fs.readFileSync("src/data/extension.json", { encoding: "utf-8" }));
 
   data.map((directoryEntry) => {
@@ -18,6 +20,8 @@ const organize = (data: IStructure[], path: string): void => {
       if (!fs.existsSync(`${directoryEntry.directory}\\${details.description}`)) {
         fs.mkdirSync(`${directoryEntry.directory}\\${details.description}`, { recursive: true });
       }
+
+      logger.success(`Moved file ${file.name}`);
 
       fs.renameSync(`${directoryEntry.directory}\\${file.name}`, `${directoryEntry.directory}\\${details.description}\\${file.name}`);
 
