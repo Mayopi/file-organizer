@@ -6,7 +6,7 @@ interface file {
   name: string;
 }
 
-interface IStructure {
+export interface IStructure {
   directory: string;
   files: file[];
 }

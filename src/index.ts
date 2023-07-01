@@ -4,6 +4,7 @@ import fs from "fs-extra";
 import validatePath from "./common/validatePath";
 import { createSpinner } from "nanospinner";
 import readFiles from "./common/readFiles";
+import checkExtension from "./common/checkExtension";
 
 interface IPrompt {
   path: string;
@@ -68,8 +69,11 @@ ${chalk.underline.blue("https://github.com/Mayopi")}
 
     spinner.start({ text: "Running Scripts...", color: "yellow" });
     const readData = readFiles(data.path);
-    console.log(readData);
-    spinner.success({ text: `Success re organizing all files within ${((performance.now() - start) / 1000).toFixed(2)} seconds.` });
+
+    const extensions = checkExtension(readData);
+
+    console.log(extensions);
+    spinner.success({ text: `Success re organizing all files within ${chalk.blue(((performance.now() - start) / 1000).toFixed(2))} seconds.` });
   } catch (error) {
     console.log(error);
     spinner.error({ text: error.message });
