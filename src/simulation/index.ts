@@ -5,6 +5,7 @@ import fs from "fs-extra";
 import { createSpinner } from "nanospinner";
 import chalk from "chalk";
 import sortByExtension from "../sort/sortByExtension";
+import sortByCategory from "../sort/sortByCategory";
 
 const simulationMain = async (data: IPrompt) => {
   const spinner = createSpinner();
@@ -28,9 +29,19 @@ const simulationMain = async (data: IPrompt) => {
 
   data.path = simulationDestination.path;
 
+  // sort by extension
+
   if (data.sortingAlgorithm == "extension") {
     spinner.start({ text: "Running Scripts...\n", color: "yellow" });
     sortByExtension(data);
+    spinner.success({ text: `Success re organizing all files within ${chalk.blue(((performance.now() - start) / 1000).toFixed(2))} seconds.` });
+  }
+
+  // sort by category
+
+  if (data.sortingAlgorithm == "category") {
+    spinner.start({ text: "Running Scripts...\n", color: "yellow" });
+    sortByCategory(data);
     spinner.success({ text: `Success re organizing all files within ${chalk.blue(((performance.now() - start) / 1000).toFixed(2))} seconds.` });
   }
 };

@@ -6,22 +6,33 @@ export interface IRegisteredExtension {
   description: string;
 }
 
-const checkExtension = (data: IStructure[]): string[] => {
-  const registeredExtensions: IRegisteredExtension[] = JSON.parse(fs.readFileSync("src/data/extension.json", { encoding: "utf-8" }));
+class CheckExtension {
+  data: IStructure[];
+  private registeredExtensions: IRegisteredExtension[];
+  constructor(data: IStructure[]) {
+    this.data = data;
+    this.registeredExtensions = JSON.parse(fs.readFileSync("src/data/extension.json", { encoding: "utf-8" }));
+  }
 
-  const uniqueExtensions = new Set<string>();
+  get extensionList(): string[] {
+    const uniqueExtensions = new Set<string>();
 
-  data.map((directoryEntry) => {
-    directoryEntry.files.map((file) => {
-      uniqueExtensions.add(file.extension);
+    this.data.map((directoryEntry) => {
+      directoryEntry.files.map((file) => {
+        uniqueExtensions.add(file.extension);
+      });
     });
-  });
 
-  const notRegisteredExtensions: string[] = Array.from(uniqueExtensions).filter((ext) => {
-    return !registeredExtensions.some((registeredExt) => registeredExt.extension === ext);
-  });
+    return Array.from(uniqueExtensions);
+  }
 
-  return notRegisteredExtensions;
-};
+  get unregisteredExtension(): string[] {
+    const notRegisteredExtensions: string[] = this.extensionList.filter((ext) => {
+      return !this.registeredExtensions.some((registeredExt) => registeredExt.extension === ext);
+    });
 
-export default checkExtension;
+    return notRegisteredExtensions;
+  }
+}
+
+export default CheckExtension;
