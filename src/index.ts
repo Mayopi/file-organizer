@@ -53,11 +53,15 @@ ${chalk.underline.blue("https://github.com/Mayopi")}
   try {
     const data = await prompt();
 
-    if (data.simulation) {
-      return simulationMain(data);
-    }
+    const start = performance.now();
 
-    return sortByExtension(data);
+    if (data.simulation) {
+      await simulationMain(data);
+    } else {
+      spinner.start({ text: "Running Scripts...\n", color: "yellow" });
+      await sortByExtension(data);
+      spinner.success({ text: `Success re organizing all files within ${chalk.blue(((performance.now() - start) / 1000).toFixed(2))} seconds.` });
+    }
   } catch (error) {
     console.log(error);
     spinner.error({ text: error.message });
