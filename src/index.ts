@@ -1,16 +1,14 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
-import fs from "fs-extra";
 import validatePath from "./common/validatePath";
 import { createSpinner } from "nanospinner";
-import readFiles from "./common/readFiles";
-import checkExtension from "./common/checkExtension";
-import fetchExtension from "./common/fetchExtension";
-import organize from "./common/organize";
+import simulationMain from "./simulation/index";
+import sortByExtension from "./sort/sortByExtension";
 
-interface IPrompt {
+export interface IPrompt {
   path: string;
   simulation: boolean;
+  sortingAlgorithm: "extension" | "category";
 }
 
 const prompt = async (): Promise<IPrompt> => {
@@ -27,6 +25,13 @@ const prompt = async (): Promise<IPrompt> => {
       message: `Do you want to run demo? ${chalk.bold.yellow("this will copy all your files and organize them instead of make any changes to original source")}`,
       type: "confirm",
       default: () => false,
+    },
+    {
+      name: "sortingAlgorithm",
+      message: "Select a Sorting Algorithm for organizing your files.",
+      type: "list",
+      choices: ["extension", "category"],
+      default: () => "extension",
     },
   ]);
 
@@ -48,39 +53,11 @@ ${chalk.underline.blue("https://github.com/Mayopi")}
   try {
     const data = await prompt();
 
-    let start = performance.now();
-
     if (data.simulation) {
-      const simulationDestination: IPrompt = await inquirer.prompt([
-        {
-          name: "path",
-          message: "Type your demo folder path destination",
-          type: "input",
-          validate: (path: string): boolean | string => validatePath(path, true),
-        },
-      ]);
-
-      if (!fs.existsSync(simulationDestination.path) || !fs.statSync(simulationDestination.path).isDirectory()) {
-        fs.mkdirSync(simulationDestination.path, { recursive: true });
-      }
-
-      start = performance.now();
-
-      fs.cpSync(data.path, simulationDestination.path, { recursive: true });
-
-      data.path = simulationDestination.path;
+      return simulationMain(data);
     }
 
-    spinner.start({ text: "Running Scripts...\n", color: "yellow" });
-    const readData = readFiles(data.path);
-
-    const extensions = checkExtension(readData);
-
-    await fetchExtension(extensions);
-
-    organize(readData, data.path);
-
-    spinner.success({ text: `Success re organizing all files within ${chalk.blue(((performance.now() - start) / 1000).toFixed(2))} seconds.` });
+    return sortByExtension(data);
   } catch (error) {
     console.log(error);
     spinner.error({ text: error.message });
