@@ -6,10 +6,11 @@ import chalk from "chalk";
 import OrganizeLogger from "../logs/logFile";
 dotenv.config();
 
-const sleep = (ms = 5000) => new Promise((r) => setTimeout(r, ms));
+const sleep = (ms: number = 5000) => new Promise((r) => setTimeout(r, ms));
 
 const fetchExtension = async (unregisteredExtensions: string[]): Promise<string[]> => {
   const logger = new OrganizeLogger();
+
   const fetchNext = async (index: number): Promise<string[]> => {
     if (index >= unregisteredExtensions.length) return [];
     const registeredExtensions: IRegisteredExtension[] = JSON.parse(fs.readFileSync("src/data/extension.json", { encoding: "utf-8" }));
