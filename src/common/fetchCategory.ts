@@ -1,13 +1,12 @@
 import puppeteer from "puppeteer";
 import fs from "fs-extra";
 import OrganizeLogger from "../logs/logFile";
+import Category from "./Category";
 
 export interface ICategory {
   extension: string[];
   category: string;
 }
-
-const sleep = (ms: number = 5000) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const fetchCategory = async () => {
   const browser = await puppeteer.launch();
@@ -31,8 +30,8 @@ const fetchCategory = async () => {
     for (const div of categoryGrouping) {
       for (const link of div) {
         if (link.href === "common") continue; // Skip "common" link
-
-        const registeredCategory: ICategory[] = JSON.parse(fs.readFileSync("src/data/category.json", { encoding: "utf-8" }));
+        const category = new Category();
+        const registeredCategory: ICategory[] = category.categoryList;
 
         // skip registered category
         if (registeredCategory.some((item) => item.category == link.text)) continue;
@@ -47,14 +46,11 @@ const fetchCategory = async () => {
 
         registeredCategory.push({ extension: linkExtensions, category: link.text });
 
-        fs.writeFileSync("src/data/category.json", JSON.stringify(registeredCategory));
-        console.log(linkExtensions);
-
-        await Promise.all([page.goBack({ timeout: 0 }), page.waitForNavigation({ timeout: 0, waitUntil: "networkidle0" })]);
+        category.writeCategory(registeredCategory);
       }
     }
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   } finally {
     await browser.close();
   }
