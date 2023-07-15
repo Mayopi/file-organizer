@@ -13,12 +13,6 @@ class CheckCategory {
   get categoryList(): ICategory[] {
     return this.registeredCategory;
   }
-
-  get unregisteredCategory(): string[] {
-    const registeredCategories = this.registeredCategory.map((category) => category.extension);
-    const unregisteredCategories = this.data.filter((category) => !registeredCategories.includes(category));
-    return unregisteredCategories;
-  }
 }
 
 export default CheckCategory;

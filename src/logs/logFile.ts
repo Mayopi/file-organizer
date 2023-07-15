@@ -13,26 +13,26 @@ export default class OrganizeLogger {
 
   log(...args: any[]): void {
     this.updateTimeStamp();
-    console.log(`[${chalk.gray(`[${this.timestamp}]`)}]`, ...args);
+    console.log(`[${chalk.blue(`[${this.timestamp}]`)}]`, ...args);
   }
 
   info(...args: any[]): void {
     this.updateTimeStamp();
-    console.log(`${chalk.gray(`[${this.timestamp}]`)} ${chalk.bold.blue("INFO:")}`, ...args);
+    console.log(`${chalk.blue(`[${this.timestamp}]`)} ${chalk.bold.blue("INFO:")}`, ...args);
   }
 
   success(...args: any[]): void {
     this.updateTimeStamp();
-    console.log(`${chalk.gray(`[${this.timestamp}]`)} ${chalk.bold.green("SUCCESS:")}`, ...args);
+    console.log(`${chalk.blue(`[${this.timestamp}]`)} ${chalk.bold.green("SUCCESS:")}`, ...args);
   }
 
   warning(...args: any[]): void {
     this.updateTimeStamp();
-    console.log(`${chalk.gray(`[${this.timestamp}]`)} ${chalk.bold.yellow("WARNING:")}`, ...args);
+    console.log(`${chalk.blue(`[${this.timestamp}]`)} ${chalk.bold.yellow("WARNING:")}`, ...args);
   }
 
   error(...args: any[]): void {
     this.updateTimeStamp();
-    console.log(`${chalk.gray(`[${this.timestamp}]`)} ${chalk.bold.red("ERROR:")}`, ...args);
+    console.log(`${chalk.blue(`[${this.timestamp}]`)} ${chalk.bold.red("ERROR:")}`, ...args);
   }
 }

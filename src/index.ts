@@ -4,6 +4,7 @@ import validatePath from "./common/validatePath";
 import { createSpinner } from "nanospinner";
 import simulationMain from "./simulation/index";
 import sortByExtension from "./sort/sortByExtension";
+import fs from "fs-extra";
 
 export interface IPrompt {
   path: string;
@@ -52,6 +53,14 @@ ${chalk.underline.blue("https://github.com/Mayopi")}
 
   try {
     const data = await prompt();
+
+    if (!fs.existsSync("src/data/extension.json")) {
+      fs.writeFileSync("src/data/extension.json", JSON.stringify([]));
+    }
+
+    if (!fs.existsSync("src/data/category.json")) {
+      fs.writeFileSync("src/data/category.json", JSON.stringify([]));
+    }
 
     const start = performance.now();
 

@@ -1,63 +1,63 @@
 import puppeteer from "puppeteer";
 import fs from "fs-extra";
-import chalk from "chalk";
 import OrganizeLogger from "../logs/logFile";
 
 export interface ICategory {
-  extension: string;
+  extension: string[];
   category: string;
 }
 
 const sleep = (ms: number = 5000) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const fetchCategory = async (extensions: string[]) => {
+const fetchCategory = async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   const logger = new OrganizeLogger();
+  const baseURL = "https://fileinfo.com/filetypes/";
 
-  const fetchNext = async (index: number, results: ICategory[]): Promise<ICategory[]> => {
-    if (index >= extensions.length) return results;
+  try {
+    logger.info("Go to " + baseURL);
+    await Promise.all([page.goto(baseURL, { timeout: 0 }), page.waitForNavigation({ timeout: 0, waitUntil: "networkidle0" })]);
 
-    const registeredCategories: ICategory[] = JSON.parse(fs.readFileSync("src/data/category.json", { encoding: "utf-8" }));
+    logger.info(`grabbing all category`);
+    let categoryGrouping: { href: string; text: string }[][] = await page.$$eval("#left article.browse div.buttongroup.cats", (divs) => {
+      return divs.map((div) => {
+        const links = Array.from(div.querySelectorAll("a"));
+        const hrefs = links.map((link) => ({ href: link.getAttribute("href").split("/").pop(), text: link.textContent }));
+        return hrefs;
+      });
+    });
 
-    logger.info(chalk.blue(`Going to https://fileinfo.com/`));
-    await page.goto("https://fileinfo.com/");
+    for (const div of categoryGrouping) {
+      for (const link of div) {
+        if (link.href === "common") continue; // Skip "common" link
 
-    let inputSelector = "#main > div.homeSearch > div.searchwrapper > form > div > input";
-    let submitButtonSelector = "#main > div.homeSearch > div.searchwrapper > form > div > button";
+        const registeredCategory: ICategory[] = JSON.parse(fs.readFileSync("src/data/category.json", { encoding: "utf-8" }));
 
-    let categorySelector = "div.entryHeader > table > tbody > tr:nth-child(3) > td:nth-child(2) > a";
+        // skip registered category
+        if (registeredCategory.some((item) => item.category == link.text)) continue;
 
-    logger.info(chalk.blue(`Searching ${extensions[index]} category`));
-    await Promise.all([page.type(inputSelector, extensions[index]), page.click(submitButtonSelector), page.waitForNavigation({ timeout: 0, waitUntil: "networkidle0" })]);
+        logger.info(`Scraping ${link.text}, in ${baseURL}${link.href}`);
+        await Promise.all([page.goto(`${baseURL}${link.href}`, { timeout: 0 }), page.waitForNavigation({ timeout: 0, waitUntil: "networkidle0" })]);
 
-    logger.info(chalk.blue(`Grab the category information`));
-    const category: string = await page.$eval(categorySelector, (element) => element.textContent);
+        logger.info(`grabbing all extension`);
+        const linkExtensions: string[] = await page.$$eval("td.extcol a", (elements) => {
+          return elements.map((element) => element.textContent);
+        });
 
-    logger.info(chalk.blue(`Wait for 3 seconds`));
-    await sleep(3000);
+        registeredCategory.push({ extension: linkExtensions, category: link.text });
 
-    const result: ICategory = {
-      extension: extensions[index],
-      category,
-    };
+        fs.writeFileSync("src/data/category.json", JSON.stringify(registeredCategory));
+        console.log(linkExtensions);
 
-    registeredCategories.push(result);
-
-    fs.writeFileSync("src/data/category.json", JSON.stringify(registeredCategories));
-    logger.info(chalk.blue(`Success caching ${category}`));
-
-    logger.info(chalk.blue(`Go back to home after grabbing ${category}`));
-    await Promise.all([page.goBack(), page.waitForNavigation({ timeout: 0, waitUntil: "networkidle0" })]);
-
-    return fetchNext(index + 1, [...results, result]);
-  };
-
-  const category = await fetchNext(0, []);
-
-  await browser.close();
-
-  return category;
+        await Promise.all([page.goBack({ timeout: 0 }), page.waitForNavigation({ timeout: 0, waitUntil: "networkidle0" })]);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    await browser.close();
+  }
 };
 
 export default fetchCategory;

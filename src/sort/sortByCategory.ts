@@ -10,11 +10,7 @@ const sortByCategory = async (data: IPrompt) => {
 
   const extensionList: string[] = extensions.extensionList;
 
-  const category = new CheckCategory(extensionList);
-
-  const unregisteredCategories = category.unregisteredCategory;
-
-  await fetchCategory(unregisteredCategories);
+  await fetchCategory();
 };
 
 export default sortByCategory;
