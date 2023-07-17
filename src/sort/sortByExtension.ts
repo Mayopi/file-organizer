@@ -1,20 +1,18 @@
 import readFiles from "../common/readFiles";
-import CheckExtension from "../common/checkExtension";
-import fetchExtension from "../common/fetchExtension";
-import organize from "../common/organize";
+import Extension from "../common/Extension";
 
 import { IPrompt } from "index";
 
 const sortByExtension = async (data: IPrompt) => {
   const readData = readFiles(data.path);
 
-  const extension = new CheckExtension(readData);
+  const extension = new Extension(readData);
 
-  const unregisteredExtensionList = extension.unregisteredExtension;
+  const unregisteredExtensionList = extension.unregisteredExtensions;
 
-  await fetchExtension(unregisteredExtensionList);
+  await extension.fetchExtension(unregisteredExtensionList);
 
-  organize(readData, data.path);
+  extension.organize(readData, data.path);
 };
 
 export default sortByExtension;

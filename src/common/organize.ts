@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import { IStructure } from "./readFiles";
-import { IRegisteredExtension } from "./checkExtension";
+import { IRegisteredExtension } from "./Extension";
 import OrganizeLogger from "../logs/logFile";
 
 const organize = (data: IStructure[], path: string): void => {

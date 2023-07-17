@@ -1,5 +1,5 @@
 import { IPrompt } from "../index";
-import CheckExtension from "../common/checkExtension";
+import CheckExtension from "../common/Extension";
 import readFiles from "../common/readFiles";
 import fetchCategory from "../common/fetchCategory";
 import CheckCategory from "../common/Category";

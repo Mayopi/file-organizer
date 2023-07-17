@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import { ICategory } from "./fetchCategory";
 import OrganizeLogger from "../logs/logFile";
+import sleep from "./sleep";
 
 class Category {
   private registeredCategory: ICategory[];
@@ -13,13 +14,14 @@ class Category {
     return this.registeredCategory;
   }
 
-  writeCategory(data: ICategory[]): void {
+  async writeCategory(data: ICategory[]): Promise<void> {
     const logger = new OrganizeLogger();
     try {
       fs.writeFileSync("src/data/category.json", JSON.stringify(data));
     } catch (error) {
       logger.error(error.message);
       logger.info("trying to write cache again...");
+      await sleep(2000);
       this.writeCategory(data);
     }
   }

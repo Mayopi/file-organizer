@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
 import fs from "fs-extra";
 import axios from "axios";
-import { IRegisteredExtension } from "./checkExtension";
+import { IRegisteredExtension } from "./Extension";
 import chalk from "chalk";
 import OrganizeLogger from "../logs/logFile";
 dotenv.config();
 
-const sleep = (ms: number = 5000) => new Promise((r) => setTimeout(r, ms));
+import sleep from "./sleep";
 
 const fetchExtension = async (unregisteredExtensions: string[]): Promise<string[]> => {
   const logger = new OrganizeLogger();
