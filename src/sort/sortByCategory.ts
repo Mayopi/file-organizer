@@ -1,8 +1,8 @@
 import { IPrompt } from "../index";
-import CheckExtension from "../common/Extension";
+import CheckExtension from "../class/Extension";
 import readFiles from "../common/readFiles";
 import fetchCategory from "../common/fetchCategory";
-import CheckCategory from "../common/Category";
+import CheckCategory from "../class/Category";
 
 const sortByCategory = async (data: IPrompt) => {
   const readData = readFiles(data.path);

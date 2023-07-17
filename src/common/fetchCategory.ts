@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
 import fs from "fs-extra";
 import OrganizeLogger from "../logs/logFile";
-import Category from "./Category";
+import Category from "../class/Category";
 
 export interface ICategory {
   extension: string[];

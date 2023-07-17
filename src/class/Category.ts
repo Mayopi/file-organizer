@@ -1,7 +1,7 @@
 import fs from "fs-extra";
-import { ICategory } from "./fetchCategory";
+import { ICategory } from "../common/fetchCategory";
 import OrganizeLogger from "../logs/logFile";
-import sleep from "./sleep";
+import sleep from "../common/sleep";
 
 class Category {
   private registeredCategory: ICategory[];

@@ -1,5 +1,5 @@
 import readFiles from "../common/readFiles";
-import Extension from "../common/Extension";
+import Extension from "../class/Extension";
 
 import { IPrompt } from "index";
 
