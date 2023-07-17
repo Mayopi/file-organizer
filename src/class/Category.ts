@@ -1,8 +1,12 @@
 import fs from "fs-extra";
-import { ICategory } from "../common/fetchCategory";
 import OrganizeLogger from "../logs/logFile";
 import sleep from "../common/sleep";
 import puppeteer from "puppeteer";
+
+export interface ICategory {
+  extension: string[];
+  category: string;
+}
 
 class Category {
   private registeredCategory: ICategory[];
